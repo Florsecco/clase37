@@ -6,7 +6,7 @@ const moviesController = {
       const peliculas = await db.Peliculas.findAll({
         order: [['title', 'ASC']]
       })
-      console.log(JSON.stringify(peliculas, null, 4))
+      // console.log(JSON.stringify(peliculas, null, 4))
       res.render('../views/moviesList', {movies:peliculas})
     } catch (error) {
       console.log(error)
@@ -44,7 +44,35 @@ const moviesController = {
         console.log(error)
         res.send(error.message) 
     }
+  },
+  add: (req,res)=>{
+    res.render('../views/createMovie')
+  },
+  create: async(req,res)=>{
+    try{
+      await db.Peliculas.create({
+        title: req.body.title,
+        rating: req.body.rating,
+        awards: req.body.awards,
+        release_date: req.body.date,
+        length: req.body.longitud
+      })
+      res.redirect('/movies')
+        
+  } catch (error) {
+      console.log(error)
+      res.send(error.message) 
   }
+},
+  edit: async (req,res)=>{
+    try{
+      const peli = await db.Peliculas.findByPk(req.params.id)
+      res.render('../views/editMovie', {movie:peli})
+    } catch (error) {
+      console.log(error)
+      res.send(error.message) 
+    } 
+  },
 }
 
 module.exports = moviesController
